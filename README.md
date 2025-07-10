@@ -47,9 +47,9 @@ songSearchTimeLimit = 180 # Time in seconds to search for songs before stopping.
 
 The `users.toml` file defines the users and their Plex server details. As with the `conf.toml` setup it's easiest to just clone `users-example.toml` and update the variables.
 
-**host**: The Plex server's hostname.
-**token**: Plex Tokens [are retrieved in the browser](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/).
-**musicLibrary**: All users need the same library and your server may have any number of audo libraries. Navigate to [app.plex.tv](https://app.plex.tv) or whatever your plex URL is. Then select the library you want to use for this script. That should send you too a URL like this: `https://app.plex.tv/desktop/#!/media/$serverID/com.plexapp.plugins.library?source=1`. It's the value of `source` that we're interested in here, so that would mean our config should have: `musicLibrary=1`.
+* **host**: The Plex server's hostname.
+* **token**: Plex Tokens [are retrieved in the browser](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/).
+* **musicLibrary**: All users need the same library and your server may have any number of audo libraries. Navigate to [app.plex.tv](https://app.plex.tv) or whatever your plex URL is. Then select the library you want to use for this script. That should send you too a URL like this: `https://app.plex.tv/desktop/#!/media/$serverID/com.plexapp.plugins.library?source=1`. It's the value of `source` that we're interested in here, so that would mean our config should have: `musicLibrary=1`.
 
 ## Usage
 
