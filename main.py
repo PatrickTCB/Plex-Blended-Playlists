@@ -62,7 +62,9 @@ except:
 
 songsPerUser = int(goalNumberOfSongs / len(users.keys()))
 startTime = time.time()
-for k in random.shuffle(list(users.keys())):
+usersList = list(users.keys())
+random.shuffle(usersList)
+for k in usersList:
     u = users[k]
     print("Adding {}'s songs".format(k.title()))
     if verbose:
@@ -94,7 +96,8 @@ for k in random.shuffle(list(users.keys())):
 print("\nThe blend playlist has {} items".format(len(blendPlaylistSongs)))
 random.shuffle(blendPlaylistSongs)
 # Check to see if the blend playlist already exists for each user
-for k in random.shuffle(list(users.keys())):
+random.shuffle(usersList)
+for k in usersList:
     print("Adding {} songs to {} for {}.          ".format(len(blendPlaylistSongs), blendPlaylistName, k.title()), end=printEnd)
     u = users[k]
     userPlaylists = plex.getAllPlaylists(plexhost=u["host"], plextoken=u["token"])
