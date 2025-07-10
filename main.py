@@ -48,7 +48,7 @@ if a["v"]:
 
 # First get the list of songs for the playlist
 
-goalNumberOfSongs = conf["numberOfSongs"]
+goalNumberOfSongs = conf["settings"]["numberOfSongs"]
 blendPlaylistName = str("{} blend".format("/".join(users.keys()))).title()
 blendPlaylistSongs = []
 
@@ -87,7 +87,7 @@ for k in random.shuffle(users.keys()):
         playlistsChecked = playlistsChecked + 1
         timeNow = time.time()
         timeSpent = int(timeNow - startTime)
-        if timeSpent > conf["songSearchTimeLimit"]:
+        if timeSpent > conf["settings"]["songSearchTimeLimit"]:
             break
     blendPlaylistSongs.extend(candidateSongs)
 
