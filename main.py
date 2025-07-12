@@ -104,7 +104,7 @@ for k in usersList:
             "artist": song["@grandparentTitle"],
             "album": song["@parentTitle"]
         }
-        bl = existingBlendedList(plexhost=u["plex"]["host"], plextoken=u["plex"]["token"], blendedListName=blendPlaylistName)
+        bl = existingBlendedList(plexhost=u["host"], plextoken=u["token"], blendedListName=blendPlaylistName)
         blendedListExists = (bl["blendedListID"] != 0)
         blendedListId = bl["blendedListID"]
         blendedListSongs = bl["blendedListSongs"]
