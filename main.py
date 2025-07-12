@@ -9,7 +9,6 @@ from lib import plex, common
 def existingBlendedList(plexhost, plextoken, blendedListName) -> dict:
     result = {}
     userPlaylists = plex.getAllPlaylists(plexhost, plextoken)
-    #common.stringToFile("playlists.json", json.dumps(userPlaylists))
     blendedListExists = False
     blendedListId = 0
     blendedListSongs = []
@@ -18,6 +17,7 @@ def existingBlendedList(plexhost, plextoken, blendedListName) -> dict:
             blendedListExists = True
             blendedListId = playlist["@ratingKey"]
             p = plex.getSinglePlaylist(plexhost=u["host"], plextoken=u["token"], playlistid=playlistID)
+            common.stringToFile("playlists.json", json.dumps(p))
             try:
                 for song in p["MediaContainer"]["Track"]:
                     blendedListSongs.append(song["@ratingKey"])
@@ -108,7 +108,7 @@ for k in usersList:
         blendedListExists = (bl["blendedListID"] != 0)
         blendedListId = bl["blendedListID"]
         blendedListSongs = bl["blendedListSongs"]
-        if ignoreThisSong(ignoredSongs=ignoredSongs, compareSong=ignorableDict) == False and song["@ratingKey"] not in blendedListSongs:
+        if ignoreThisSong(ignoredSongs=ignoredSongs, compareSong=ignorableDict) == False or song["@ratingKey"] not in blendedListSongs:
             if song["@ratingKey"] not in candidateSongs and song["@ratingKey"] not in blendPlaylistSongs:
                 candidateSongs.append(song["@ratingKey"])
             playlist["MediaContainer"]["Track"].remove(song)
@@ -117,6 +117,7 @@ for k in usersList:
         timeNow = time.time()
         timeSpent = int(timeNow - startTime)
         if timeSpent > conf["settings"]["songSearchTimeLimit"]:
+            print("\nTimeout on song search for {}".format(k))
             break
     blendPlaylistSongs.extend(candidateSongs)
 
@@ -125,7 +126,7 @@ random.shuffle(blendPlaylistSongs)
 # Check to see if the blend playlist already exists for each user
 random.shuffle(usersList)
 for k in usersList:
-    print("Adding {} songs to {} for {}.          ".format(len(blendPlaylistSongs), blendPlaylistName, k.title()), end=printEnd)
+    print("\nAdding {} songs to {} for {}".format(len(blendPlaylistSongs), blendPlaylistName, k.title()))
     u = users[k]
     bl = existingBlendedList(plexhost=u["host"], plextoken=u["token"], blendedListName=blendPlaylistName)
     blendedListExists = (bl["blendedListID"] != 0)
