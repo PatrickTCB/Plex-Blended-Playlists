@@ -18,11 +18,12 @@ def existingBlendedList(plexhost, plextoken, blendedListName) -> dict:
             blendedListId = playlist["@ratingKey"]
             p = plex.getSinglePlaylist(plexhost=u["host"], plextoken=u["token"], playlistid=playlistID)
             if p:
-                try:
-                    for song in p["MediaContainer"]["Track"]:
-                        blendedListSongs.append(song["@ratingKey"])
-                except:
-                    blendedListSongs.append(p["MediaContainer"]["Track"]["@ratingKey"])
+                if "MediaContainer" in p.keys():
+                    try:
+                        for song in p["MediaContainer"]["Track"]:
+                            blendedListSongs.append(song["@ratingKey"])
+                    except:
+                        blendedListSongs.append(p["MediaContainer"]["Track"]["@ratingKey"])
     if blendedListExists:
         plex.removeAllFromPlaylist(plexhost=u["host"], plextoken=u["token"], playlistid=blendedListId, verbose=verbose)
     result["blendedListID"] = 0
