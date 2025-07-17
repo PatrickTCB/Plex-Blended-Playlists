@@ -12,22 +12,25 @@ def existingBlendedList(plexhost, plextoken, blendedListName) -> dict:
     blendedListExists = False
     blendedListId = 0
     blendedListSongs = []
+    titlesFound = []
     for playlist in userPlaylists["MediaContainer"]["Playlist"]:
-        if blendPlaylistName == playlist["@title"]:
+        titlesFound.append(playlist["@title"])
+        if blendedListName == playlist["@title"]:
             blendedListExists = True
             blendedListId = playlist["@ratingKey"]
-            p = plex.getSinglePlaylist(plexhost=u["host"], plextoken=u["token"], playlistid=playlistID)
+            p = plex.getSinglePlaylist(plexhost=u["host"], plextoken=u["token"], playlistid=playlist["@ratingKey"])
             if p:
                 if "MediaContainer" in p.keys():
-                    try:
-                        for song in p["MediaContainer"]["Track"]:
-                            blendedListSongs.append(song["@ratingKey"])
-                    except:
-                        blendedListSongs.append(p["MediaContainer"]["Track"]["@ratingKey"])
-    if blendedListExists:
-        plex.removeAllFromPlaylist(plexhost=u["host"], plextoken=u["token"], playlistid=blendedListId, verbose=verbose)
-    result["blendedListID"] = 0
-    result["blendedListSongs"] = blendedListSongs    
+                    if int(p["MediaContainer"]["@size"]) > 0:
+                        try:
+                            for song in p["MediaContainer"]["Track"]:
+                                blendedListSongs.append(song["@ratingKey"])
+                        except:
+                            blendedListSongs.append(p["MediaContainer"]["Track"]["@ratingKey"])
+    result["blendedListID"] = blendedListId
+    result["blendedListSongs"] = blendedListSongs
+    result["blendedListExists"] = blendedListExists
+    print("Titles found: {}\n'{}' ID: {}".format(titlesFound, blendedListName, blendedListId))
     return result
 
 def ignoreThisSong(ignoredSongs, compareSong):
@@ -95,6 +98,8 @@ for k in usersList:
         print("Building from {} playlists".format(len(u["playlists"])))
     candidateSongs = []
     playlistsChecked = 0
+    bl = existingBlendedList(plexhost=u["host"], plextoken=u["token"], blendedListName=blendPlaylistName)
+    u["bl"] = bl
     while len(candidateSongs) < songsPerUser:
         playlistID = random.choice(u["playlists"])
         print("Looking at {} for {}.          ".format(playlistID, k), end=printEnd)
@@ -105,11 +110,7 @@ for k in usersList:
             "artist": song["@grandparentTitle"],
             "album": song["@parentTitle"]
         }
-        bl = existingBlendedList(plexhost=u["host"], plextoken=u["token"], blendedListName=blendPlaylistName)
-        blendedListExists = (bl["blendedListID"] != 0)
-        blendedListId = bl["blendedListID"]
-        blendedListSongs = bl["blendedListSongs"]
-        if ignoreThisSong(ignoredSongs=ignoredSongs, compareSong=ignorableDict) == False or song["@ratingKey"] not in blendedListSongs:
+        if ignoreThisSong(ignoredSongs=ignoredSongs, compareSong=ignorableDict) == False or song["@ratingKey"] not in bl["blendedListSongs"]:
             if song["@ratingKey"] not in candidateSongs and song["@ratingKey"] not in blendPlaylistSongs:
                 candidateSongs.append(song["@ratingKey"])
             playlist["MediaContainer"]["Track"].remove(song)
@@ -127,16 +128,14 @@ random.shuffle(blendPlaylistSongs)
 # Check to see if the blend playlist already exists for each user
 random.shuffle(usersList)
 for k in usersList:
-    print("\nAdding {} songs to {} for {}".format(len(blendPlaylistSongs), blendPlaylistName, k.title()))
     u = users[k]
-    bl = existingBlendedList(plexhost=u["host"], plextoken=u["token"], blendedListName=blendPlaylistName)
-    blendedListExists = (bl["blendedListID"] != 0)
-    blendedListId = bl["blendedListID"]
-    if blendedListExists:
-        plex.removeAllFromPlaylist(plexhost=u["host"], plextoken=u["token"], playlistid=blendedListId, verbose=verbose)
-    if blendedListId == 0:
+    bl = u["bl"]
+    print("\nAdding {} songs to {} (id {}) for {}".format(len(blendPlaylistSongs), blendPlaylistName, bl["blendedListID"], k.title()))
+    if bl["blendedListExists"] and len(bl["blendedListSongs"]) > 0:
+        plex.removeAllFromPlaylist(plexhost=u["host"], plextoken=u["token"], playlistid=bl["blendedListID"], verbose=verbose)
+    if bl["blendedListID"] == 0:
         blendedList = plex.newPlaylist(plexhost=u["host"], plextoken=u["token"], title=blendPlaylistName)
         blendedListId = blendedList["MediaContainer"]["Playlist"]["@ratingKey"]
-    if blendedListId != 0:
+    if bl["blendedListID"] != 0:
         for songID in blendPlaylistSongs:
-            plex.addItemToPlaylist(plexhost=u["host"], plextoken=u["token"], playlistId=blendedListId, itemId=songID)
+            plex.addItemToPlaylist(plexhost=u["host"], plextoken=u["token"], playlistId=bl["blendedListID"], itemId=songID)
