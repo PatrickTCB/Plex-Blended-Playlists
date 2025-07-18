@@ -30,7 +30,6 @@ def existingBlendedList(plexhost, plextoken, blendedListName) -> dict:
     result["blendedListID"] = blendedListId
     result["blendedListSongs"] = blendedListSongs
     result["blendedListExists"] = blendedListExists
-    print("Titles found: {}\n'{}' ID: {}".format(titlesFound, blendedListName, blendedListId))
     return result
 
 def ignoreThisSong(ignoredSongs, compareSong):
