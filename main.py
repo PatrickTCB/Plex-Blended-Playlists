@@ -134,7 +134,7 @@ for k in usersList:
         plex.removeAllFromPlaylist(plexhost=u["host"], plextoken=u["token"], playlistid=bl["blendedListID"], verbose=verbose)
     if bl["blendedListID"] == 0:
         blendedList = plex.newPlaylist(plexhost=u["host"], plextoken=u["token"], title=blendPlaylistName)
-        bl["blendedListId"] = blendedList["MediaContainer"]["Playlist"]["@ratingKey"]
+        bl["blendedListID"] = blendedList["MediaContainer"]["Playlist"]["@ratingKey"]
     if bl["blendedListID"] != 0:
         for songID in blendPlaylistSongs:
             plex.addItemToPlaylist(plexhost=u["host"], plextoken=u["token"], playlistId=bl["blendedListID"], itemId=songID)
