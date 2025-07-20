@@ -4,9 +4,11 @@ This Python script creates a blended playlist from multiple Plex users, combinin
 
 ## Overview
 
-The script takes configuration and user information from TOML files, retrieves playlists from each user's Plex server, randomly selects songs, and creates a new blended playlist on each user's server.  It also includes a mechanism to ignore specific songs.
+The script takes configuration from a TOML file and the blend configurations from a JSON file. Then it retrieves playlists from each user's Plex server, randomly selects songs, and creates a new blended playlist on each user's server.  It also includes a mechanism to ignore specific songs.
 
-For example, I use the ignore setting to ignore my the white noise songs my kids use for sleeping.
+There's no limit to the number of users you can use to create any given blend, nor is there a limit to how many different blended playlists you can create. I create one that blends all the users in the family, as well as one for each family member by themselves. That's demoed here with just two users because that's more legible. But it you can do 5, 10, whatever you want. 
+
+Personally, I use the ignore setting to ignore my the white noise songs my kids use for sleeping.
 
 ## Prerequisites
 
@@ -31,7 +33,7 @@ For example, I use the ignore setting to ignore my the white noise songs my kids
 
 3.  **Create `conf.toml`:**  Configure the script with your desired settings.  See the "Configuration" section below for details.
 
-4.  **Create `users.toml`:**  Define the users and their Plex server details.  See the "User Configuration" section below for details.
+4.  **Create `blends.json`:**  Define the users and their Plex server details.  See the "User Configuration" section below for details.
 
 ## Configuration
 
@@ -43,10 +45,13 @@ numberOfSongs = 100  # The desired number of songs in the blended playlist
 songSearchTimeLimit = 180 # Time in seconds to search for songs before stopping.
 ```
 
-## User Configuration
+## Blend Configuration
 
-The `users.toml` file defines the users and their Plex server details. As with the `conf.toml` setup it's easiest to just clone `users-example.toml` and update the variables.
+The `blends.json` file defines the users and their Plex server details. As with the `conf.toml` setup it's easiest to just clone `blends-example.json` and update the variables. 
 
+The file consists of a list of blends. Each blend has two elements: `name` and `users`. Where `name` is just the name you want to use for the resulting playlist and `users` is an object like this:
+
+* **name**: The name of the user who is a part of this blend
 * **host**: The Plex server's hostname.
 * **token**: Plex Tokens [are retrieved in the browser](https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/).
 * **musicLibrary**: All users need the same library and your server may have any number of audo libraries. Navigate to [app.plex.tv](https://app.plex.tv) or whatever your plex URL is. Then select the library you want to use for this script. That should send you too a URL like this: `https://app.plex.tv/desktop/#!/media/$serverID/com.plexapp.plugins.library?source=1`. It's the value of `source` that we're interested in here, so that would mean our config should have: `musicLibrary=1`.
@@ -63,19 +68,19 @@ python main.py
 
 *   `-v`: Enable verbose output.
 *   `-conf <config_file>`: Specify a custom configuration file (defaults to `conf.toml`).
-*   `-users <users_file>`: Specify a custom users file (defaults to `users.toml`).
+*   `-blends <blends_file>`: Specify a custom blends configuration file (defaults to `blends.json`).
 
 Example:
 
 ```bash
-python main.py -v -conf my_config.toml -users my_users.toml
+python main.py -v -conf my_config.toml -blends my_blends.json
 ```
 
 ## Files
 
 *   `main.py`: The main script.
 *   `conf.toml`: Configuration file (see "Configuration" section).
-*   `users.toml`: User configuration file (see "User Configuration" section).
+*   `blends.json`: Blends configuration file (see "Blend Configuration" section).
 *   `lib/plex.py`:  A library file containing functions for interacting with the Plex API.
 *   `lib/common.py`: A library file containing common utility functions.
 *   `ignoredSongs.json`: (Optional) A JSON file containing a list of songs to ignore (title, artist, album). See `ignoredSongs-example.json` for easy examples.

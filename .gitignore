@@ -2,6 +2,7 @@
 .chkbit
 *.json
 !ignoredSongs-example.json
+!blends-example.json
 conf.toml
 users.toml
 

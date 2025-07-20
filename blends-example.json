@@ -1,0 +1,69 @@
+{
+    "blends": [
+        {
+            "name": "Alice/Bod Blend",
+            "users": [
+                {
+                    "name": "alice",
+                    "host": "https://plex.example.net",
+                    "token": "abc",
+                    "musicLibrary": 3,
+                    "playlists": [
+                        123,
+                        456,
+                        789
+                    ]
+                },
+                {
+                    "name": "bob",
+                    "host": "https://plex.example.net",
+                    "token": "def",
+                    "musicLibrary": 3,
+                    "playlists": [
+                        101112,
+                        131415,
+                        161718
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Alice Blend",
+            "users": [
+                {
+                    "name": "alice",
+                    "host": "https://plex.example.net",
+                    "token": "abc",
+                    "musicLibrary": 3,
+                    "playlists": [
+                        123,
+                        456,
+                        789,
+                        987,
+                        654,
+                        321
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Bob Blend",
+            "users": [
+                {
+                    "name": "bob",
+                    "host": "https://plex.example.net",
+                    "token": "def",
+                    "musicLibrary": 3,
+                    "playlists": [
+                        101112,
+                        131415,
+                        161718,
+                        192021,
+                        222324,
+                        252627
+                    ]
+                }
+            ]
+        }
+    ]
+}
