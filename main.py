@@ -70,6 +70,8 @@ blendsFileName = "{}blends.json".format(currentPath)
 if "blends" in a.keys():
     blendsFileName = a["conf"]["blends"]
 
+dryRun = "dryRun" in a.keys()
+
 # Load configs
 confstring = common.fileToString(confFileName)
 conf = tomllib.loads(confstring)
@@ -151,11 +153,14 @@ for blend in blends["blends"]:
     for u in blend["users"]:
         bl = u["bl"]
         print("\nAdding {} songs to {} (id {}) for {}".format(len(blendPlaylistSongs), blendPlaylistName, bl["blendedListID"], u["name"].title()))
-        if bl["blendedListExists"] and len(bl["blendedListSongs"]) > 0:
-            plex.removeAllFromPlaylist(plexhost=u["host"], plextoken=u["token"], playlistid=bl["blendedListID"], verbose=verbose)
-        if bl["blendedListID"] == 0:
-            blendedList = plex.newPlaylist(plexhost=u["host"], plextoken=u["token"], title=blendPlaylistName)
-            bl["blendedListID"] = blendedList["MediaContainer"]["Playlist"]["@ratingKey"]
-        if bl["blendedListID"] != 0:
-            for songID in blendPlaylistSongs:
-                plex.addItemToPlaylist(plexhost=u["host"], plextoken=u["token"], playlistId=bl["blendedListID"], itemId=songID)
+        if dryRun == False:
+            if bl["blendedListExists"] and len(bl["blendedListSongs"]) > 0:
+                plex.removeAllFromPlaylist(plexhost=u["host"], plextoken=u["token"], playlistid=bl["blendedListID"], verbose=verbose)
+            if bl["blendedListID"] == 0:
+                blendedList = plex.newPlaylist(plexhost=u["host"], plextoken=u["token"], title=blendPlaylistName)
+                bl["blendedListID"] = blendedList["MediaContainer"]["Playlist"]["@ratingKey"]
+            if bl["blendedListID"] != 0:
+                for songID in blendPlaylistSongs:
+                    plex.addItemToPlaylist(plexhost=u["host"], plextoken=u["token"], playlistId=bl["blendedListID"], itemId=songID)
+        else:
+            print("Just a dry run. No playlists were harmed during the running of this script.")
