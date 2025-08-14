@@ -10,13 +10,14 @@ def usersEligibleSongs(plexhost, plextoken, playlistIDs, ignoredSongIDs, verbose
     tracks = []
     for playlistID in playlistIDs:
         playlist = plex.getSinglePlaylist(plexhost=plexhost, plextoken=plextoken, playlistid=playlistID)
-        if isinstance(playlist["MediaContainer"]["Track"], list):
-            for track in playlist["MediaContainer"]["Track"]:
-                if track["@ratingKey"] not in ignoredSongIDs:
-                    tracks.append(track)
-                else:
-                    if verbose:
-                        print("'{}' by '{}' is in ignoredSongIDs.".format(track["@title"], track["@grandparentTitle"]))
+        if "Track" in playlist["MediaContainer"].keys():
+            if isinstance(playlist["MediaContainer"]["Track"], list):
+                for track in playlist["MediaContainer"]["Track"]:
+                    if track["@ratingKey"] not in ignoredSongIDs:
+                        tracks.append(track)
+                    else:
+                        if verbose:
+                            print("'{}' by '{}' is in ignoredSongIDs.".format(track["@title"], track["@grandparentTitle"]))
     return tracks
         
 
