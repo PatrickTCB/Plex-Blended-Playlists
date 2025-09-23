@@ -80,7 +80,11 @@ conf = tomllib.loads(confstring)
 blendsConfString = common.fileToString(blendsFileName)
 blends = json.loads(blendsConfString)
 
-# Setup icecream / debugging stuff
+allowDislikedSongs = False
+if "allowDislikedSongs" in conf.keys():
+    allowDislikedSongs = conf["allowDislikedSongs"]
+
+# Setup / debugging stuff
 verbose = False
 printEnd = "\r"
 textCutOff = 20
@@ -131,6 +135,10 @@ for blend in blends["blends"]:
             }
             songAllowed = True
             songAllowed = not ignoreThisSong(ignoredSongs=ignoredSongs, compareSong=ignorableDict)
+            if songAllowed:
+                if "@userRating" in song.keys():
+                    if song["@userRating"] == "1.0" and allowDislikedSongs == False:
+                        songAllowed = False
             if songAllowed:
                 songAllowed = song["@ratingKey"] not in ignoredSongIDs
             if songAllowed:

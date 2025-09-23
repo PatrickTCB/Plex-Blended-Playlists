@@ -3,3 +3,4 @@
 numberOfSongs = 100
 # max time in seconds that the script spends looking for songs for each user. Sometimes a configuration might expect x number of songs for a playlist but the user's source playlist just doesn't have. 180s is long enough to check ~10k songs.
 songSearchTimeLimit = 180
+allowDislikedSongs = false
